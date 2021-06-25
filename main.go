@@ -15,7 +15,5 @@ func main() {
 	routes.SetupRoutes(app)
 	if err := app.Listen(os.Getenv("PORT_NO")); err != nil {
 		log.Fatal(err)
-	} else {
-		log.Fatal("server started on port", os.Getenv("PORT_NO"))
-	}
+	} 
 }
