@@ -2,7 +2,7 @@ package main
 
 import (
 	"cust-service/database"
-	routes "cust-service/routes"
+	"cust-service/routes"
 	"log"
 	"os"
 
@@ -13,7 +13,7 @@ func main() {
 	database.InitDatabase()
 	app := fiber.New()
 	routes.SetupRoutes(app)
-	if err := app.Listen(os.Getenv("PORT_NO")); err != nil {
+	if err := app.Listen(os.Getenv(":3000")); err != nil {
 		log.Fatal(err)
-	} 
+	}
 }

@@ -9,7 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateUser(c *fiber.Ctx) error {
+//create user handler
+func createUser(c *fiber.Ctx) error {
 
 	user := new(model.User)
 	if err := c.BodyParser(user); err != nil {
@@ -30,7 +31,8 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 }
 
-func Login(c *fiber.Ctx) error {
+//login handler
+func login(c *fiber.Ctx) error {
 
 	userData := new(model.User)
 	c.BodyParser(userData)
