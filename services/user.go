@@ -25,6 +25,7 @@ func RegisterationService(user *model.User) (map[string]interface{}, error) {
 		panic(err)
 	}
 	user.Password = string(hashedPassword)
+	user.ConfirmPassword = string(hashedPassword)
 	if err := db.Create(&user).Error; err != nil {
 		return nil, err
 	}
@@ -38,6 +39,7 @@ func RegisterationService(user *model.User) (map[string]interface{}, error) {
 		fmt.Print(err)
 	}
 	delete(m, "password")
+	delete(m, "confirm_password")
 	return m, nil
 }
 
@@ -45,12 +47,9 @@ func LoginService(userData *model.User) string {
 
 	db := database.DBConn
 	var user model.User
-	db.Find(&user, "Email = ?", userData.UserName)
-
+	db.Find(&user, "user_name = ?", userData.UserName)
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.Password))
-
 	if err != nil {
-		fmt.Print("error in compareHash", err)
 		return err.Error()
 	} else {
 		token, err := CreateToken(user.UserName)
@@ -76,6 +75,7 @@ func CreateToken(userId string) (string, error) {
 	return token, nil
 }
 
+//authentication
 func Authentication(c *fiber.Ctx) {
 	tokenString := c.Get("Authorization")
 	tokenString1 := strings.Split(tokenString, " ")
