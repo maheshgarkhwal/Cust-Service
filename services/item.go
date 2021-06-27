@@ -23,7 +23,7 @@ func ItemUpdate(i model.Item, id string) (model.Item, error) {
 	if item.ItemName == "" {
 		return item, nil
 	} else {
-		if err := db.Model(&item).Updates(model.Item{ItemName: item.ItemName, Rate: item.Qty, Qty: item.Rate}).Error; err != nil {
+		if err := db.Model(&item).Updates(model.Item{ItemName: i.ItemName, Rate: i.Qty, Qty: i.Rate}).Error; err != nil {
 			return item, err
 		}
 		return item, nil

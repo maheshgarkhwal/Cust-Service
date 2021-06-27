@@ -20,10 +20,6 @@ func addItem(c *fiber.Ctx) error {
 	if len(errs) > 0 {
 		return c.Status(401).JSON(fiber.Map{"message": "enter valid input", "result": errs})
 	}
-	fmt.Printf("%v,%T \n", item.ItemName, item.ItemName)
-	fmt.Printf("%v,%T \n", item.Qty, item.Qty)
-	fmt.Printf("%v,%T \n", item.Rate, item.Rate)
-
 	result, err := service.CreateItem(*item)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "unable to create Item", "result": err})

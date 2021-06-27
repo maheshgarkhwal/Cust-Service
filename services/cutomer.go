@@ -16,14 +16,14 @@ func CreateCustomer(i model.Customer) (model.Customer, error) {
 	return i, nil
 }
 
-func CustomerUpdate(i model.Customer, id string) (model.Customer, error) {
+func CustomerUpdate(c model.Customer, id string) (model.Customer, error) {
 	db := database.DBConn
 	var Customer model.Customer
 	db.First(&Customer, id)
 	if Customer.FirstName == "" {
 		return Customer, nil
 	} else {
-		if err := db.Model(&Customer).Updates(model.Customer{FirstName: Customer.FirstName, LastName: Customer.LastName, Phone: Customer.Phone}).Error; err != nil {
+		if err := db.Model(&Customer).Updates(model.Customer{FirstName: c.FirstName, LastName: c.LastName, Phone: c.Phone}).Error; err != nil {
 			return Customer, err
 		}
 		return Customer, nil

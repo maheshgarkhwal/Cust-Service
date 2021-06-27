@@ -14,14 +14,15 @@ func SetupRoutes(a *fiber.App) {
 
 	//item routes
 	app.Post("/add-item", addItem)
-	app.Post("/update-item/:id", updateItem)
-	app.Post("/list-item", listItem)
-	app.Post("/delete-item/:id", deleteItem)
+	app.Put("/update-item/:id", updateItem)
+	app.Get("/list-item", listItem)
+	app.Delete("/delete-item/:id", deleteItem)
 
 	//customer master routes
 	app.Post("/add-customer", addCustomer)
-	app.Post("/update-customer/:id", updateCustomer)
-	app.Post("/list-customer", listCustomer)
-	app.Post("/delete-customer/:id", deleteCustomer)
+	app.Put("/update-customer/:id", updateCustomer)
+	app.Get("/list-customer", listCustomer)
+	app.Delete("/delete-customer/:id", deleteCustomer)
 
+	//
 }
