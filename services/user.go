@@ -5,13 +5,10 @@ import (
 	"cust-service/model"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gofiber/fiber"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -47,12 +44,12 @@ func LoginService(userData *model.User) string {
 
 	db := database.DBConn
 	var user model.User
-	db.Find(&user, "user_name = ?", userData.UserName)
+	db.Find(&user, "user_name = ?", userData.Email)
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.Password))
 	if err != nil {
 		return err.Error()
 	} else {
-		token, err := CreateToken(user.UserName)
+		token, err := CreateToken(user.Email)
 		if err != nil {
 			fmt.Print(err)
 		}
@@ -75,27 +72,30 @@ func CreateToken(userId string) (string, error) {
 	return token, nil
 }
 
-//authentication
-func Authentication(c *fiber.Ctx) {
-	tokenString := c.Get("Authorization")
-	tokenString1 := strings.Split(tokenString, " ")
-
-	hmacSecretString := os.Getenv("ACCESS_SECRET") // Value
-	hmacSecret := []byte(hmacSecretString)
-	token, err := jwt.Parse(tokenString1[1], func(token *jwt.Token) (interface{}, error) {
-		// check token signing method etc
-		return hmacSecret, nil
-	})
-
-	if err != nil {
-		fmt.Println("error:", err)
+func Calculate(o *model.Order) *model.Order {
+	db := database.DBConn
+	var item model.Item
+	db.Find(&item, "item_name = ?", o.Item)
+	if item.ItemName == "" {
+		return nil
 	}
+	o.Rate = item.Rate * o.Qty
+	return o
+}
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Println(claims)
-		c.Next()
-	} else {
-		log.Println("Invalid JWT Token")
-		c.Status(400).JSON("invalid json token")
+func OrderPlace(o *model.Order) *model.Order {
+	db := database.DBConn
+	var item model.Item
+	db.Find(&item, "item_name = ?", o.Item)
+	if item.ItemName == "" {
+		return nil
 	}
+	item.Qty = item.Qty - o.Qty
+	if err := db.Model(&item).Updates(model.Item{ItemName: item.ItemName, Rate: item.Rate, Qty: item.Qty}).Error; err != nil {
+		return nil
+	}
+	if err := db.Create(&o).Error; err != nil {
+		return nil
+	}
+	return o
 }

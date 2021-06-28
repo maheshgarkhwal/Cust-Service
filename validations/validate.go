@@ -4,28 +4,50 @@ import (
 	"cust-service/model"
 	"net/mail"
 	"net/url"
-	"regexp"
+	"unicode"
 )
 
-var regexpUname = regexp.MustCompile("^[a-zA-Z0-9]+(-[a-zA-Z0-9]+){0,2}$")
-
-//var regexPass = regexp.MustCompile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+func isValid(s string) bool {
+	var (
+		hasMinLen  = false
+		hasUpper   = false
+		hasLower   = false
+		hasNumber  = false
+		hasSpecial = false
+	)
+	if len(s) >= 8 {
+		hasMinLen = true
+	}
+	for _, char := range s {
+		switch {
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsNumber(char):
+			hasNumber = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			hasSpecial = true
+		}
+	}
+	return hasMinLen && hasUpper && hasLower && hasNumber && hasSpecial
+}
 
 //user validation
 func ValidUser(u model.User) url.Values {
 
 	errs := url.Values{}
 
-	if u.UserName == "" || len(u.UserName) > 30 {
+	if u.Email == "" || len(u.Email) > 30 {
 		errs.Add("username", "The username is required and should be less than 30 characters!")
 	}
 
-	if u.Password != u.ConfirmPassword {
+	if isValid(u.Password) {
 		errs.Add("password", "Passoword and confirmPassword must be same")
 	}
 
-	if !regexpUname.MatchString(u.UserName) {
-		errs.Add("username", "Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen.!")
+	if _, err := mail.ParseAddress(u.Email); err != nil {
+		errs.Add("username", "please enter valid email address")
 	}
 
 	/* if !regexPass.MatchString(u.Password) {

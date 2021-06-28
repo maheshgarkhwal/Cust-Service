@@ -70,3 +70,28 @@ func login(c *fiber.Ctx) error {
 	result := service.LoginService(userData)
 	return c.Status(200).JSON(fiber.Map{"message": "login sucess", "token": result})
 }
+
+func rateCalculate(c *fiber.Ctx) error {
+	orderData := new(model.Order)
+	c.BodyParser(orderData)
+	result := service.Calculate(orderData)
+
+	if result != nil {
+		return c.Status(200).JSON(result)
+	} else {
+		return c.Status(400).JSON("item name you enter does not exist")
+	}
+}
+
+func placeOrder(c *fiber.Ctx) error {
+	orderData := new(model.Order)
+	c.BodyParser(orderData)
+	result := service.OrderPlace(orderData)
+
+	if result != nil {
+		return c.Status(200).JSON(fiber.Map{"message": "order placed sucessfully", "result": result})
+	} else {
+		return c.Status(400).JSON("erro in placing order")
+	}
+
+}

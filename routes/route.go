@@ -9,7 +9,7 @@ func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api/v1")
 
 	//sign up and login routes
-	api.Post("/create-user", createUser)
+	api.Post("/create-user", auth, createUser)
 	api.Post("/login", login)
 
 	//item routes
@@ -24,5 +24,7 @@ func SetupRoutes(app *fiber.App) {
 	api.Get("/list-customer", auth, listCustomer)
 	api.Delete("/delete-customer/:id", auth, deleteCustomer)
 
-	//
+	//place an order
+	api.Get("/rate", auth, rateCalculate)
+	api.Post("/place-order", auth, placeOrder)
 }
