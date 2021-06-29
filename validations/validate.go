@@ -63,7 +63,7 @@ func ValidItem(i model.Item) url.Values {
 	errs := url.Values{}
 
 	if len(i.ItemName) == 0 || CountDigits(int(i.Qty)) <= 0 || CountDigits(int(i.Rate)) <= 0 {
-		errs.Add("ItemName, rate qty", "itemname, Rate, Qty should not be blank or Qty and Rate can't be zero or negative value!")
+		errs.Add("ItemName, rate qty", "itemname, Rate, Qty are mandatory or Qty and Rate can't be zero or negative value!")
 	}
 
 	if len(i.ItemName) > 20 {

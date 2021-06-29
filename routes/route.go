@@ -9,7 +9,7 @@ func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api/v1")
 
 	//sign up and login routes
-	api.Post("/create-user", auth, createUser)
+	api.Post("/create-user", createUser)
 	api.Post("/login", login)
 
 	//item routes
