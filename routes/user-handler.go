@@ -40,14 +40,31 @@ func auth(c *fiber.Ctx) error {
 	}
 }
 
+type Person struct {
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+}
+
 //create user handler
 func createUser(c *fiber.Ctx) error {
+	u := new(Person)
+	if err := c.BodyParser(u); err != nil {
+		fmt.Println(err)
+		return c.Status(500).JSON(err)
+
+	}
+	if u.Password != u.ConfirmPassword {
+		return c.Status(400).JSON("password and confirm password must be same")
+	}
 
 	user := new(model.User)
 	if err := c.BodyParser(user); err != nil {
 		fmt.Println(err)
 		return c.Status(500).JSON(err)
+
 	}
+	fmt.Print(user)
 	errs := validations.ValidUser(*user)
 	if len(errs) > 0 {
 		return c.Status(401).JSON(fiber.Map{"message": "enter valid input", "result": errs})
@@ -67,8 +84,12 @@ func login(c *fiber.Ctx) error {
 
 	userData := new(model.User)
 	c.BodyParser(userData)
-	result := service.LoginService(userData)
-	return c.Status(200).JSON(fiber.Map{"message": "login sucess", "token": result})
+	result, err := service.LoginService(userData)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"message": "incorrect email password", "result": err.Error()})
+	} else {
+		return c.Status(200).JSON(fiber.Map{"message": "login sucess", "token": result})
+	}
 }
 
 func rateCalculate(c *fiber.Ctx) error {

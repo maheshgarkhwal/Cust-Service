@@ -42,17 +42,13 @@ func ValidUser(u model.User) url.Values {
 		errs.Add("username", "The username is required and should be less than 30 characters!")
 	}
 
-	if isValid(u.Password) {
-		errs.Add("password", "Passoword and confirmPassword must be same")
+	if !isValid(u.Password) {
+		errs.Add("password", "Password should be equal or greater than 8 character and must contain one upper case, lower case letter, one numeric and one special character!")
 	}
 
 	if _, err := mail.ParseAddress(u.Email); err != nil {
 		errs.Add("username", "please enter valid email address")
 	}
-
-	/* if !regexPass.MatchString(u.Password) {
-		errs.Add("Password", "Minimum 8 Character, 1 capital letter and 1 Special character!")
-	} */
 
 	return errs
 }

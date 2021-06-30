@@ -22,7 +22,6 @@ func RegisterationService(user *model.User) (map[string]interface{}, error) {
 		panic(err)
 	}
 	user.Password = string(hashedPassword)
-	user.ConfirmPassword = string(hashedPassword)
 	if err := db.Create(&user).Error; err != nil {
 		return nil, err
 	}
@@ -40,20 +39,23 @@ func RegisterationService(user *model.User) (map[string]interface{}, error) {
 	return m, nil
 }
 
-func LoginService(userData *model.User) string {
+func LoginService(userData *model.User) (string, error) {
 
 	db := database.DBConn
 	var user model.User
-	db.Find(&user, "user_name = ?", userData.Email)
+	db.Find(&user, "email = ?", userData.Email)
+	fmt.Println(user.Password)
+	fmt.Print(userData.Password)
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.Password))
 	if err != nil {
-		return err.Error()
+		fmt.Print(">> ", err)
+		return "password you entered is incorrect", err
 	} else {
 		token, err := CreateToken(user.Email)
 		if err != nil {
 			fmt.Print(err)
 		}
-		return token
+		return token, nil
 	}
 }
 
