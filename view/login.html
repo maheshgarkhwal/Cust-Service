@@ -1,5 +1,4 @@
 <html>
-    <head>login</head>
     <body>
         <body style="text-align:center"> 
             
@@ -17,9 +16,46 @@
 <script>
     function Login(){
         var email=document.getElementById('email').value
-        var 
-
-        fetch('http://localhost:3000/api/v1/login')
+        var password=document.getElementById('psw').value
+        var obj={email, password}
+        console.log(JSON.stringify(obj))
+        fetch('http://localhost:3000/api/v1/login', { method: 'POST', body: JSON.stringify(obj), headers:{"Content-Type":"application/json"}}).then(
+            response => response.json()
+      ).then(json =>{
+     console.log(json)
+     if(json.token!=null) {
+         console.log(json.token)
+         setCookie('token',json.token, 3);
+         alert("login sucessful");
+         location.replace("file:///home/mahesh.garkhwal/Desktop/Cust-Service/view/item.html");
+     }
+     else{
+        alert("invalid user");
+     }
+      })
     }
+
+    function setCookie(name, value, days) { 
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        
+}
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
 </script>
 </html>

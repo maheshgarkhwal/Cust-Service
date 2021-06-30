@@ -1,0 +1,73 @@
+
+<html>
+    <head>
+        <title>Dashboard</title>
+    </head>
+    <body style="text-align:center"> 
+            
+     <h1 style="margin-left: 25px;">Dashboard</h1>
+     <input style="margin: 0px 0px 10px 1120px;" type="button" onclick="location.href='file:///home/mahesh.garkhwal/Desktop/Cust-Service/view/customer.html';" value="customer section" />
+     <button style="margin-left: 1120px; " onclick="logout()">Logout</button>
+
+    <div style="float:left;"; class="container-add">
+    <h2 style="margin-left: 25px;">Add item</h2>
+    
+    <label for="item" style="margin: 25px 5px 25px 25px;"><b>item</b></b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter item" name="item" id="item" required>
+    <br>
+    <label for="rate" style="margin: 25px 5px 25px 25px;"><b>rate</b></label>
+    <input type="rate" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
+    <br>
+    <label for="qty" style="margin: 25px 5px 25px 25px;"><b>Qty</b></label>
+    <input type="qty" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
+    <br>
+    <button style="margin-bottom: 20px;"  onclick="addItem()">add Item</button>
+
+    <h2 style="margin-left: 25px;">Delete item</h2>
+    <input type="itemId" style="margin-bottom: 10px;" placeholder="Enter item Id" name="qty" id="itemId" required>
+    <button onclick="deleteItem()">Delete Item</button>
+
+    </div>
+
+     <div style="margin-left:300px; float:left;">
+        <h2>Get Item</h2>
+        <button onclick="getItem()">Get Items</button>
+     </div>
+
+
+
+    <div style="float: right; margin: 0px 10px 0px 0px;" class="container-update">
+     <h2 style="margin-left: 25px;">Update item</h2>
+
+    <label for="itemId" style="margin: 25px 5px 25px 25px;"><b>itemId</b></b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter itemId" name="itemId" id="itemId" required>
+    <br>
+     <label for="item" style="margin: 25px 5px 25px 25px;"><b>item</b></b></label>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter item" name="item" id="item" required>
+     <br>
+     <label for="rate" style="margin: 25px 5px 25px 25px;"><b>rate</b></label>
+     <input type="rate" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
+     <br>
+     <label for="qty" style="margin: 25px 5px 25px 25px;"><b>Qty</b></label>
+     <input type="qty" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
+      <br>
+      <button style="margin-bottom: 20px;"  onclick="updateItem()">Update Item</button>
+     <br>
+    </div>
+</body>
+<script>
+    function addItem(){
+     var item_name=document.getElementById('item').value
+        var rate=document.getElementById('rate').value
+        var qty=document.getElementById('qty').value
+        var obj={item_name, rate,qty}
+        console.log(JSON.stringify(obj))
+        fetch('http://localhost:3000/api/v1/add-item', { method: 'POST', body: JSON.stringify(obj), headers:{"Content-Type":"application/json"}}).then(
+            response => response.json()
+      ).then(json =>{
+     console.log(json)
+     alert("item added sucessful");
+    })
+}
+</script>
+</html>

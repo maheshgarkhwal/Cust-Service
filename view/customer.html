@@ -1,0 +1,79 @@
+
+<html>
+    <head>
+        <title>Dashboard</title>
+    </head>
+    <body style="text-align:center"> 
+            
+     <h1 style="margin-left: 25px;">Dashboard</h1>
+     <input style="margin: 0px 0px 10px 1120px;" type="button" onclick="location.href='file:///home/mahesh.garkhwal/Desktop/Cust-Service/view/item.html';" value="item section" />     <br>
+     <button style="margin-left: 1120px; " onclick="logout()">Logout</button>
+
+    <div style="float:left;"; class="container-add">
+    <h2 style="margin-left: 25px;">Add customer</h2>
+    
+    <label for="customer" style="margin: 25px 5px 25px 25px;"><b>first name</b></b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter customer" name="customer" id="customer" required>
+    <br>
+    <label for="lastname" style="margin: 25px 5px 25px 25px;"><b>last name</b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
+    <br>
+    <label for="phone" style="margin: 25px 5px 25px 25px;"><b>phone</b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
+    <br>
+    <label for="email" style="margin: 25px 5px 25px 25px;"><b>email</b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter email" name="qty" id="qty" required>
+
+    <button style="margin-bottom: 20px;"  onclick="addcustomer()">add customer</button>
+
+    <h2 style="margin-left: 25px;">Delete customer</h2>
+    <input type="customerId" style="margin-bottom: 10px;" placeholder="Enter customer Id" name="qty" id="customerId" required>
+    <button onclick="deletecustomer()">Delete customer</button>
+
+    </div>
+
+     <div style="margin-left:300px; float:left;">
+        <h2>Get customer</h2>
+        <button onclick="getcustomer()">Get customers</button>
+     </div>
+
+
+
+    <div style="float: right; margin: 0px 10px 0px 0px;" class="container-update">
+     <h2 style="margin-left: 25px;">Update customer</h2>
+
+    <label for="customerId" style="margin: 25px 5px 25px 25px;"><b>customerId</b></b></label>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter customerId" name="customerId" id="customerId" required>
+    <br>
+     <label for="customer" style="margin: 25px 5px 25px 25px;"><b>first name</b></b></label>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter customer" name="customer" id="customer" required>
+     <br>
+     <label for="lastname" style="margin: 25px 5px 25px 25px;"><b>last name</b></label>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
+     <br>
+     <label for="phone" style="margin: 25px 5px 25px 25px;"><b>phone</b></label>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
+      <br>
+      <label for="email" style="margin: 25px 5px 25px 25px;"><b>email</b></label>
+      <input type="text" style="margin-bottom: 10px;" placeholder="Enter email" name="qty" id="qty" required>
+  <br>
+      <button style="margin-bottom: 20px;"  onclick="updatecustomer()">Update customer</button>
+     <br>
+    </div>
+</body>
+<script>
+    function addcustomer(){
+     var customer_name=document.getElementById('customer').value
+        var rate=document.getElementById('rate').value
+        var qty=document.getElementById('qty').value
+        var obj={customer_name, rate,qty}
+        console.log(JSON.stringify(obj))
+        fetch('http://localhost:3000/api/v1/add-customer', { method: 'POST', body: JSON.stringify(obj), headers:{"Content-Type":"application/json"}}).then(
+            response => response.json()
+      ).then(json =>{
+     console.log(json)
+     alert("customer added sucessful");
+    })
+}
+</script>
+</html>
