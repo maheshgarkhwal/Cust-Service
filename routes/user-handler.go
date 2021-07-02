@@ -6,7 +6,6 @@ import (
 	"cust-service/validations"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -15,14 +14,16 @@ import (
 //authentication
 func auth(c *fiber.Ctx) error {
 	tokenString := c.Get("Authorization")
+	fmt.Println(tokenString)
 	if len(tokenString) == 0 {
 		return c.Status(400).JSON("missing json token")
 	}
-	tokenString1 := strings.Split(tokenString, " ")
-
+	/* tokenString1 := strings.Split(tokenString, " ")
+	fmt.Println(">>", tokenString1[0])
+	fmt.Println(">>>", tokenString1[1]) */
 	hmacSecretString := os.Getenv("ACCESS_SECRET") // Value
 	hmacSecret := []byte(hmacSecretString)
-	token, err := jwt.Parse(tokenString1[1], func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// check token signing method etc
 		return hmacSecret, nil
 	})

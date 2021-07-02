@@ -6,7 +6,7 @@
     <body style="text-align:center"> 
             
      <h1 style="margin-left: 25px;">Dashboard</h1>
-     <input style="margin: 0px 0px 10px 1120px;" type="button" onclick="location.href='file:///home/mahesh.garkhwal/Desktop/Cust-Service/view/customer.html';" value="customer section" />
+     <input style="margin: 0px 0px 10px 1120px;" type="button" onclick="location.href='http://localhost:3000/customer.html';" value="customer section" />
      <button style="margin-left: 1120px; " onclick="logout()">Logout</button>
 
     <div style="float:left;"; class="container-add">
@@ -16,15 +16,15 @@
     <input type="text" style="margin-bottom: 10px;" placeholder="Enter item" name="item" id="item" required>
     <br>
     <label for="rate" style="margin: 25px 5px 25px 25px;"><b>rate</b></label>
-    <input type="rate" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
     <br>
     <label for="qty" style="margin: 25px 5px 25px 25px;"><b>Qty</b></label>
-    <input type="qty" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
     <br>
     <button style="margin-bottom: 20px;"  onclick="addItem()">add Item</button>
 
     <h2 style="margin-left: 25px;">Delete item</h2>
-    <input type="itemId" style="margin-bottom: 10px;" placeholder="Enter item Id" name="qty" id="itemId" required>
+    <input type="itemId" style="margin-bottom: 10px;" placeholder="Enter item Id" name="qty" id="ditemId" required>
     <button onclick="deleteItem()">Delete Item</button>
 
     </div>
@@ -40,16 +40,16 @@
      <h2 style="margin-left: 25px;">Update item</h2>
 
     <label for="itemId" style="margin: 25px 5px 25px 25px;"><b>itemId</b></b></label>
-    <input type="text" style="margin-bottom: 10px;" placeholder="Enter itemId" name="itemId" id="itemId" required>
+    <input type="text" style="margin-bottom: 10px;" placeholder="Enter itemId" name="itemId" id="uitemId" required>
     <br>
      <label for="item" style="margin: 25px 5px 25px 25px;"><b>item</b></b></label>
-     <input type="text" style="margin-bottom: 10px;" placeholder="Enter item" name="item" id="item" required>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter item" name="item" id="uitem" required>
      <br>
      <label for="rate" style="margin: 25px 5px 25px 25px;"><b>rate</b></label>
-     <input type="rate" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="rate" required>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter rate" name="rate" id="urate" required>
      <br>
      <label for="qty" style="margin: 25px 5px 25px 25px;"><b>Qty</b></label>
-     <input type="qty" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="qty" required>
+     <input type="text" style="margin-bottom: 10px;" placeholder="Enter qty" name="qty" id="uqty" required>
       <br>
       <button style="margin-bottom: 20px;"  onclick="updateItem()">Update Item</button>
      <br>
@@ -58,16 +58,93 @@
 <script>
     function addItem(){
      var item_name=document.getElementById('item').value
-        var rate=document.getElementById('rate').value
-        var qty=document.getElementById('qty').value
+        var rate=Number.parseInt(document.getElementById('rate').value)
+        var qty=Number.parseInt(document.getElementById('qty').value)
         var obj={item_name, rate,qty}
-        console.log(JSON.stringify(obj))
-        fetch('http://localhost:3000/api/v1/add-item', { method: 'POST', body: JSON.stringify(obj), headers:{"Content-Type":"application/json"}}).then(
+        console.log(getCookie("token"))
+        const myHeaders = new Headers();
+         myHeaders.append('Authorization', getCookie("token"));
+        myHeaders.append('Content-Type', 'application/json');
+        console.log(JSON.stringify(obj)) 
+        fetch('http://localhost:3000/api/v1/add-item', { method: 'POST', body: JSON.stringify(obj), headers: myHeaders}).then(
+            response => response.json()
+      ).then(json =>{
+     console.log(json);
+     if(json.result.ID)
+         alert("item added sucessful");
+     else 
+         alert("unable to add item");
+    })
+}
+
+function getItem(){
+    const myHeaders = new Headers();
+         myHeaders.append('Authorization', getCookie("token"));
+        myHeaders.append('Content-Type', 'application/json');
+        fetch(`http://localhost:3000/api/v1/list-item?page=1&limit=5`, { method: 'GET', headers: myHeaders}).then(
             response => response.json()
       ).then(json =>{
      console.log(json)
-     alert("item added sucessful");
+     for(i=0; i<json.result.length; i++){
+        var x = document.createElement("LABEL");
+        x.innerHTML =json.result[i].ID; 
+        document.body.appendChild(x); 
+        var x0 = document.createElement("LABEL");
+        x0.innerHTML =json.result[i].item_name; 
+        document.body.appendChild(x0); 
+        var x1 = document.createElement("BR");
+        document.body.appendChild(x1); 
+     }
     })
+}
+
+function updateItem(){
+        var id=Number.parseInt(document.getElementById('uitemId').value)
+        var item_name=document.getElementById('uitem').value
+        var rate=Number.parseInt(document.getElementById('urate').value)
+        var qty=Number.parseInt(document.getElementById('uqty').value)
+        var obj={item_name, rate,qty}
+        console.log(getCookie("token"))
+        const myHeaders = new Headers();
+         myHeaders.append('Authorization', getCookie("token"));
+        myHeaders.append('Content-Type', 'application/json');
+        console.log(JSON.stringify(obj)) 
+        fetch(`http://localhost:3000/api/v1/update-item/${id}`, { method: 'PUT', body: JSON.stringify(obj), headers: myHeaders}).then(
+            response => response.json()
+      ).then(json =>{
+     if(json.result.ID)
+     alert("item updated sucessfully");
+     else
+     alert("unable to update item")
+    })
+}
+
+function deleteItem(){
+        var did=Number.parseInt(document.getElementById('ditemId').value)
+        console.log(getCookie("token"))
+        const myHeaders = new Headers();
+         myHeaders.append('Authorization', getCookie("token"));
+        myHeaders.append('Content-Type', 'application/json');
+        fetch(`http://localhost:3000/api/v1/delete-item/${did}`, { method: 'DELETE', headers: myHeaders}).then(
+            response => response.json()
+      ).then(json =>{
+     console.log(json)
+     if(json.result.ID)
+     alert("item deleted sucessfully");
+     else
+     alert("item does not exist")
+    })
+}
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
 }
 </script>
 </html>

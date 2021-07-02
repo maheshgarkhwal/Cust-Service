@@ -20,6 +20,7 @@ func main() {
 
 	database.InitDatabase()
 	app := fiber.New()
+	app.Static("/", "./view")
 	app.Use(cors.New())
 	routes.SetupRoutes(app)
 	if err := app.Listen(os.Getenv("PORT_NO")); err != nil {
